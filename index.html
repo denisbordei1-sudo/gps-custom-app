@@ -3,274 +3,490 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#07110f" />
+  <meta name="theme-color" content="#06130f" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="GPS Lab" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-  <title>GPS Lab Navigator</title>
+  <meta name="apple-mobile-web-app-title" content="GPS Custom" />
+  <title>GPS Custom App</title>
+  <link rel="manifest" href="manifest.webmanifest?v=5" />
+  <link rel="apple-touch-icon" href="icon-192.png?v=5" />
   <style>
-    :root{
-      color-scheme: dark;
-      --bg:#07110f;
-      --panel:#101916;
-      --panel2:#14231f;
-      --glass:rgba(16,25,22,.78);
-      --line:rgba(134,239,172,.17);
-      --line2:rgba(45,212,191,.18);
-      --text:#ecfdf5;
-      --muted:#a7f3d0;
-      --soft:#ccfbf1;
-      --accent:#36f5a2;
-      --accent2:#22d3ee;
-      --warn:#facc15;
-      --danger:#fb7185;
-      --shadow:0 28px 85px rgba(0,0,0,.45);
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Arial,sans-serif;
+    :root {
+      --bg: #06130f;
+      --panel: rgba(13, 31, 25, 0.86);
+      --panel-2: rgba(20, 45, 37, 0.78);
+      --border: rgba(115, 255, 197, 0.18);
+      --text: #ecfff7;
+      --muted: #9fb7ae;
+      --green: #4cffb0;
+      --cyan: #58d7ff;
+      --amber: #ffd166;
+      --danger: #ff6b6b;
+      --shadow: 0 20px 55px rgba(0, 0, 0, 0.38);
+      --radius: 24px;
     }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
-    body{
-      min-height:100vh;
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      min-height: 100%;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
       background:
-        radial-gradient(circle at 18% 0%, rgba(54,245,162,.18), transparent 34%),
-        radial-gradient(circle at 88% 12%, rgba(34,211,238,.14), transparent 32%),
-        linear-gradient(135deg,#06100e 0%,#081915 42%,#020706 100%);
-      overflow-x:hidden;
+        radial-gradient(circle at top left, rgba(76, 255, 176, 0.18), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(88, 215, 255, 0.15), transparent 30%),
+        linear-gradient(145deg, #020604 0%, var(--bg) 52%, #081b16 100%);
     }
-    body:before{
-      content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;
-      background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
-      background-size:32px 32px;
-      mask-image:linear-gradient(to bottom,black,transparent 82%);
+
+    body {
+      padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
     }
-    .shell{max-width:640px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 18px) 16px 34px;position:relative;z-index:1}
-    .hero{
-      border:1px solid var(--line);
-      border-radius:34px;
-      padding:20px;
-      background:linear-gradient(145deg,rgba(16,25,22,.9),rgba(7,17,15,.82));
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(18px);
-      overflow:hidden;
-      position:relative;
+
+    .app {
+      max-width: 760px;
+      margin: 0 auto;
     }
-    .hero:after{
-      content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-110px;top:-120px;
-      background:radial-gradient(circle,rgba(54,245,162,.18),transparent 65%);
-      pointer-events:none;
+
+    .hero {
+      background: linear-gradient(155deg, rgba(17, 42, 34, 0.94), rgba(8, 20, 16, 0.94));
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
     }
-    .head{display:flex;align-items:center;justify-content:space-between;gap:14px;position:relative;z-index:1}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{
-      width:54px;height:54px;border-radius:18px;
-      background:linear-gradient(135deg,rgba(54,245,162,.2),rgba(34,211,238,.14));
-      border:1px solid rgba(54,245,162,.28);
-      display:grid;place-items:center;box-shadow:0 0 28px rgba(54,245,162,.14);
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      right: -80px;
+      top: -90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(76, 255, 176, 0.24), transparent 64%);
+      pointer-events: none;
     }
-    .logo svg{width:31px;height:31px;filter:drop-shadow(0 0 8px rgba(54,245,162,.6))}
-    .eyebrow{margin:0;color:var(--muted);font-weight:850;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
-    h1{margin:3px 0 0;font-size:29px;line-height:1;letter-spacing:-.055em}
-    .chip{border:1px solid var(--line2);background:rgba(34,211,238,.1);color:#cffafe;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:900;white-space:nowrap}
-    .intro{position:relative;z-index:1;margin:16px 0 0;color:#d1fae5;font-size:14px;line-height:1.45;max-width:560px}
-    .radar-wrap{position:relative;z-index:1;margin:18px 0;display:grid;grid-template-columns:154px 1fr;gap:14px;align-items:stretch}
-    .radar{
-      min-height:154px;border-radius:30px;border:1px solid rgba(54,245,162,.18);
-      background:radial-gradient(circle,rgba(54,245,162,.14) 0 2px,transparent 3px),radial-gradient(circle,transparent 0 37%,rgba(54,245,162,.18) 38% 39%,transparent 40% 62%,rgba(34,211,238,.15) 63% 64%,transparent 65%),linear-gradient(145deg,rgba(8,25,19,.92),rgba(8,14,13,.9));
-      display:grid;place-items:center;position:relative;overflow:hidden;
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
     }
-    .radar:before{content:"";position:absolute;width:76px;height:76px;border-radius:50%;border:1px dashed rgba(167,243,208,.35)}
-    .radar:after{content:"";position:absolute;inset:0;background:conic-gradient(from 0deg,rgba(54,245,162,.45),transparent 34%,transparent 100%);animation:sweep 3.8s linear infinite;opacity:.65;transform-origin:center}
-    @keyframes sweep{to{transform:rotate(360deg)}}
-    .pin{position:relative;z-index:1;width:24px;height:24px;border-radius:50%;background:var(--accent);box-shadow:0 0 26px rgba(54,245,162,.9),0 0 0 9px rgba(54,245,162,.13)}
-    .status-card{border:1px solid var(--line);border-radius:30px;background:rgba(255,255,255,.045);padding:15px;display:flex;flex-direction:column;justify-content:space-between;min-height:154px}
-    .status{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.4;color:#d1fae5}.dot{width:11px;height:11px;border-radius:99px;background:var(--warn);box-shadow:0 0 18px var(--warn);margin-top:4px;flex:0 0 auto}.dot.ok{background:var(--accent);box-shadow:0 0 22px var(--accent)}.dot.err{background:var(--danger);box-shadow:0 0 18px var(--danger)}
-    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-    button,.mapbtn{border:0;appearance:none;border-radius:18px;padding:14px 12px;font-size:15px;font-weight:900;text-align:center;text-decoration:none;color:#042014;background:linear-gradient(135deg,var(--accent),#8cffc6);box-shadow:0 16px 30px rgba(54,245,162,.16);cursor:pointer}
-    button.secondary,.mapbtn.secondary{background:rgba(255,255,255,.055);border:1px solid rgba(204,251,241,.14);color:#ecfdf5;box-shadow:none}
-    .section{margin-top:18px;position:relative;z-index:1}
-    .section-title{display:flex;align-items:center;gap:8px;color:#bbf7d0;font-size:12px;font-weight:950;text-transform:uppercase;letter-spacing:.14em;margin:0 0 10px}.section-title:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent2);box-shadow:0 0 12px var(--accent2)}
-    .grid{display:grid;gap:10px}.two{grid-template-columns:1fr 1fr}.three{grid-template-columns:1fr 1fr 1fr}
-    .metric{border:1px solid rgba(204,251,241,.1);background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.035));border-radius:24px;padding:14px;min-height:90px;position:relative;overflow:hidden}.metric:after{content:"";position:absolute;right:-25px;bottom:-25px;width:80px;height:80px;border-radius:50%;background:rgba(54,245,162,.06)}
-    .label{position:relative;z-index:1;color:#99f6e4;font-size:12px;font-weight:850;margin-bottom:8px}.value{position:relative;z-index:1;color:#f0fdf4;font-size:21px;line-height:1.1;font-weight:950;letter-spacing:-.025em;word-break:break-word}.value.small{font-size:15px;line-height:1.32}.value.mini{font-size:12px;line-height:1.42;font-weight:700;color:#d1fae5}.muted{color:#a7f3d0}.warn{color:#fef08a}.oktext{color:#86efac}.danger{color:#fda4af}.wide{grid-column:1/-1}.coordinates{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:15px}
-    .map{width:100%;height:270px;border:1px solid rgba(204,251,241,.12);border-radius:26px;background:#0b1412;margin-top:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
-    .notice{margin-top:14px;border:1px solid rgba(250,204,21,.15);background:rgba(250,204,21,.07);border-radius:22px;padding:13px;color:#fef3c7;font-size:13px;line-height:1.5}.footer{text-align:center;color:#a7f3d0;opacity:.76;font-size:12px;margin-top:14px}
-    @media(max-width:520px){.shell{padding-left:12px;padding-right:12px}.hero{padding:15px;border-radius:28px}.radar-wrap{grid-template-columns:1fr}.radar{min-height:136px}.two,.three,.actions{grid-template-columns:1fr}.head{align-items:flex-start}.chip{display:none}h1{font-size:27px}.metric{min-height:84px}.map{height:245px}}
+
+    .gps-icon {
+      width: 66px;
+      height: 66px;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, rgba(76, 255, 176, 0.18), rgba(88, 215, 255, 0.10));
+      border: 1px solid rgba(76, 255, 176, 0.28);
+      box-shadow: inset 0 0 20px rgba(76, 255, 176, 0.08);
+      flex: 0 0 auto;
+    }
+
+    .gps-icon svg { width: 38px; height: 38px; }
+
+    h1 {
+      font-size: 29px;
+      margin: 0;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .badge {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(76, 255, 176, 0.10);
+      border: 1px solid rgba(76, 255, 176, 0.20);
+      color: #caffea;
+      font-size: 13px;
+      font-weight: 650;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 14px rgba(255, 209, 102, 0.7);
+    }
+
+    .dot.on {
+      background: var(--green);
+      box-shadow: 0 0 14px rgba(76, 255, 176, 0.8);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    button, a.button {
+      width: 100%;
+      border: 0;
+      border-radius: 18px;
+      padding: 15px 14px;
+      font-size: 15px;
+      font-weight: 750;
+      color: #04100c;
+      background: linear-gradient(145deg, var(--green), var(--cyan));
+      box-shadow: 0 10px 24px rgba(76, 255, 176, 0.18);
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+    }
+
+    button.secondary, a.secondary {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    button:disabled, a.disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      min-height: 104px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.20);
+    }
+
+    .card.wide { grid-column: 1 / -1; }
+
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+
+    .value {
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      word-break: break-word;
+    }
+
+    .small-value {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      margin-top: 9px;
+    }
+
+    .footer-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      transform: translateX(-50%) translateY(110px);
+      background: #eefef7;
+      color: #06130f;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-weight: 750;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s ease;
+      z-index: 20;
+      min-width: 210px;
+      text-align: center;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 520px) {
+      body { padding-left: 14px; padding-right: 14px; }
+      .hero { padding: 20px; }
+      h1 { font-size: 26px; }
+      .gps-icon { width: 58px; height: 58px; border-radius: 19px; }
+      .grid { grid-template-columns: 1fr; }
+      .controls, .footer-actions { grid-template-columns: 1fr; }
+      .value { font-size: 22px; }
+    }
   </style>
 </head>
 <body>
-  <main class="shell">
+  <main class="app">
     <section class="hero">
-      <div class="head">
-        <div class="brand">
-          <div class="logo" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-12A7 7 0 0 0 5 9c0 5.9 7 12 7 12Z" stroke="#36f5a2" stroke-width="1.8"/><path d="M12 12.2A3.2 3.2 0 1 0 12 5.8a3.2 3.2 0 0 0 0 6.4Z" stroke="#22d3ee" stroke-width="1.8"/></svg>
-          </div>
-          <div>
-            <p class="eyebrow">Laborator GPS</p>
-            <h1>GPS Lab Navigator</h1>
-          </div>
+      <div class="header-row">
+        <div class="gps-icon" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 5.5C21.7 5.5 13.3 13.9 13.3 24.2c0 13.8 18.7 34.3 18.7 34.3s18.7-20.5 18.7-34.3C50.7 13.9 42.3 5.5 32 5.5Z" stroke="#4CFFB0" stroke-width="4" stroke-linejoin="round"/>
+            <circle cx="32" cy="24" r="7.5" stroke="#58D7FF" stroke-width="4"/>
+            <path d="M32 14v5M32 29v5M22 24h5M37 24h5" stroke="#ECFFF7" stroke-width="3" stroke-linecap="round"/>
+          </svg>
         </div>
-        <div class="chip">PWA iPhone</div>
-      </div>
-
-      <p class="intro">Interfață mobilă pentru achiziția și prelucrarea locală a datelor GPS: poziție, timp, precizie, altitudine, viteză, direcție și hartă.</p>
-
-      <div class="radar-wrap">
-        <div class="radar"><div class="pin"></div></div>
-        <div class="status-card">
-          <div class="status"><span id="dot" class="dot"></span><span id="status">GPS oprit. Apasă „Pornește GPS”.</span></div>
-          <div class="actions">
-            <button onclick="startGPS()">Pornește GPS</button>
-            <button class="secondary" onclick="stopGPS()">Oprește</button>
-          </div>
+        <div>
+          <h1>GPS Custom App</h1>
+          <p class="subtitle">Monitorizare simplă a poziției GPS pe iPhone.</p>
         </div>
       </div>
-
-      <section class="section">
-        <h2 class="section-title">Date GPS principale</h2>
-        <div class="grid two">
-          <div class="metric"><div class="label">Latitudine</div><div id="lat" class="value">—</div></div>
-          <div class="metric"><div class="label">Longitudine</div><div id="lon" class="value">—</div></div>
-          <div class="metric"><div class="label">Ora</div><div id="time" class="value">—</div></div>
-          <div class="metric"><div class="label">Data</div><div id="date" class="value">—</div></div>
-          <div class="metric"><div class="label">Nr. sateliți</div><div id="sat" class="value small warn">N/A iOS</div></div>
-          <div class="metric"><div class="label">Ultima actualizare</div><div id="updated" class="value small">—</div></div>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2 class="section-title">Informații GPS suplimentare</h2>
-        <div class="grid two">
-          <div class="metric"><div class="label">Acuratețe poziție</div><div id="acc" class="value small">—</div></div>
-          <div class="metric"><div class="label">Altitudine</div><div id="alt" class="value small">—</div></div>
-          <div class="metric"><div class="label">Acuratețe altitudine</div><div id="altAcc" class="value small">—</div></div>
-          <div class="metric"><div class="label">Viteză</div><div id="speed" class="value small">—</div></div>
-          <div class="metric"><div class="label">Direcție deplasare</div><div id="heading" class="value small">—</div></div>
-          <div class="metric"><div class="label">Coordonate DMS</div><div id="dms" class="value small">—</div></div>
-          <div class="metric wide"><div class="label">Coordonate pentru copiere</div><div id="copyCoords" class="value small coordinates">—</div></div>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2 class="section-title">Status sistem</h2>
-        <div class="grid two">
-          <div class="metric"><div class="label">Permisiune locație</div><div id="permission" class="value small">—</div></div>
-          <div class="metric"><div class="label">Conexiune</div><div id="online" class="value small">—</div></div>
-          <div class="metric wide"><div class="label">Dispozitiv / browser</div><div id="device" class="value mini">—</div></div>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2 class="section-title">Hartă poziție</h2>
-        <div class="actions">
-          <a id="mapLink" class="mapbtn secondary" href="#" target="_blank" rel="noopener">Deschide harta</a>
-          <button class="secondary" onclick="copyCoordinates()">Copiază coordonatele</button>
-        </div>
-        <iframe id="map" class="map" title="Hartă GPS"></iframe>
-      </section>
-
-      <p class="notice"><b>Notă:</b> pe iPhone, în PWA/Safari, numărul brut de sateliți GPS nu este disponibil prin API-ul public folosit de aplicație. De aceea câmpul „Nr. sateliți” este marcat „N/A iOS”, iar aplicația afișează în plus acuratețe, altitudine, viteză, direcție și coordonate DMS.</p>
+      <div class="badge"><span id="statusDot" class="dot"></span><span id="statusText">GPS oprit</span></div>
     </section>
-    <div class="footer">Sistem de prelucrare a datelor GPS · PWA pentru iPhone</div>
+
+    <section class="controls" aria-label="Control GPS">
+      <button id="startBtn">Pornește GPS</button>
+      <button id="stopBtn" class="secondary" disabled>Oprește GPS</button>
+    </section>
+
+    <section class="grid" aria-label="Date GPS">
+      <div class="card">
+        <div class="label">Latitudine</div>
+        <div id="lat" class="value">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Longitudine</div>
+        <div id="lon" class="value">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Ora</div>
+        <div id="time" class="value">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Data</div>
+        <div id="date" class="value">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Acuratețe GPS</div>
+        <div id="accuracy" class="value">—</div>
+        <div class="hint">Cu cât valoarea este mai mică, cu atât poziția este mai precisă.</div>
+      </div>
+      <div class="card">
+        <div class="label">Altitudine</div>
+        <div id="altitude" class="value">—</div>
+        <div class="hint">Poate lipsi dacă telefonul nu primește această informație.</div>
+      </div>
+      <div class="card">
+        <div class="label">Viteză</div>
+        <div id="speed" class="value">—</div>
+        <div class="hint">Valoare estimată de telefon; e mai utilă când te deplasezi.</div>
+      </div>
+      <div class="card">
+        <div class="label">Direcție</div>
+        <div id="heading" class="value">—</div>
+        <div class="hint">Direcția deplasării, nu neapărat orientarea telefonului.</div>
+      </div>
+      <div class="card">
+        <div class="label">Nr. sateliți</div>
+        <div id="satellites" class="value">N/A iOS</div>
+        <div class="hint">iOS nu expune direct numărul brut de sateliți prin browser.</div>
+      </div>
+      <div class="card">
+        <div class="label">Ultima actualizare</div>
+        <div id="updated" class="value">—</div>
+      </div>
+      <div class="card wide">
+        <div class="label">Coordonate</div>
+        <div id="coordsText" class="small-value">Pornește GPS-ul pentru afișarea coordonatelor.</div>
+        <div class="footer-actions">
+          <button id="copyBtn" class="secondary" disabled>Copiază coordonate</button>
+          <a id="mapBtn" class="button secondary disabled" href="#" target="_blank" rel="noopener">Deschide harta</a>
+        </div>
+      </div>
+    </section>
+
+    <p class="note">Pentru rezultate mai bune, testează aplicația afară sau lângă geam și permite accesul la locație.</p>
   </main>
 
-<script>
-let watchId = null;
-let lastCoords = null;
-const $ = id => document.getElementById(id);
-const fmt = (n, digits=6) => typeof n === 'number' && Number.isFinite(n) ? n.toFixed(digits) : '—';
-const meters = v => typeof v === 'number' && Number.isFinite(v) ? `${Math.round(v)} m` : '—';
+  <div id="toast" class="toast" role="status" aria-live="polite">Coordonate copiate</div>
 
-function setStatus(text, state='idle'){
-  $('status').textContent = text;
-  $('dot').classList.toggle('ok', state === 'ok');
-  $('dot').classList.toggle('err', state === 'err');
-}
-function compass(deg){
-  if(typeof deg !== 'number' || !Number.isFinite(deg)) return 'indisponibil';
-  const dirs=['N','NE','E','SE','S','SV','V','NV'];
-  return `${Math.round(deg)}° ${dirs[Math.round(deg/45)%8]}`;
-}
-function toDMS(deg, isLat){
-  if(typeof deg !== 'number' || !Number.isFinite(deg)) return '—';
-  const dir = isLat ? (deg>=0?'N':'S') : (deg>=0?'E':'V');
-  const abs=Math.abs(deg), d=Math.floor(abs), minFloat=(abs-d)*60, m=Math.floor(minFloat), s=((minFloat-m)*60).toFixed(2);
-  return `${d}° ${m}' ${s}" ${dir}`;
-}
-function updateStaticInfo(){
-  $('online').innerHTML = navigator.onLine ? '<span class="oktext">Online</span>' : '<span class="danger">Offline</span>';
-  $('device').textContent = `${navigator.platform || 'iPhone'} | ${navigator.language || 'ro-RO'} | ${navigator.userAgent}`;
-  if(navigator.permissions && navigator.permissions.query){
-    navigator.permissions.query({name:'geolocation'}).then(r => {
-      $('permission').textContent = r.state;
-      r.onchange = () => $('permission').textContent = r.state;
-    }).catch(()=>{$('permission').textContent='verificare la pornire';});
-  } else {
-    $('permission').textContent='verificare la pornire';
-  }
-}
-function startGPS(){
-  updateStaticInfo();
-  if(!('geolocation' in navigator)){
-    setStatus('Geolocation API nu este disponibil pe acest browser.', 'err');
-    return;
-  }
-  setStatus('Se cere permisiunea pentru locație...', 'idle');
-  if(watchId !== null) navigator.geolocation.clearWatch(watchId);
-  watchId = navigator.geolocation.watchPosition(pos => {
-    const c = pos.coords;
-    lastCoords = c;
-    const d = new Date(pos.timestamp);
-    $('lat').textContent = fmt(c.latitude, 7);
-    $('lon').textContent = fmt(c.longitude, 7);
-    $('time').textContent = d.toLocaleTimeString('ro-RO');
-    $('date').textContent = d.toLocaleDateString('ro-RO');
-    $('updated').textContent = d.toLocaleString('ro-RO');
-    $('acc').textContent = meters(c.accuracy);
-    $('alt').textContent = c.altitude !== null ? meters(c.altitude) : 'indisponibil';
-    $('altAcc').textContent = c.altitudeAccuracy !== null ? meters(c.altitudeAccuracy) : 'indisponibil';
-    $('speed').textContent = c.speed !== null ? `${(c.speed*3.6).toFixed(1)} km/h (${c.speed.toFixed(2)} m/s)` : 'indisponibil';
-    $('heading').textContent = c.heading !== null ? compass(c.heading) : 'indisponibil';
-    $('dms').textContent = `${toDMS(c.latitude,true)} | ${toDMS(c.longitude,false)}`;
-    $('copyCoords').textContent = `${fmt(c.latitude,7)}, ${fmt(c.longitude,7)}`;
-    const bbox = `${c.longitude-0.006},${c.latitude-0.006},${c.longitude+0.006},${c.latitude+0.006}`;
-    $('map').src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${c.latitude},${c.longitude}`;
-    $('mapLink').href = `https://www.openstreetmap.org/?mlat=${c.latitude}&mlon=${c.longitude}#map=17/${c.latitude}/${c.longitude}`;
-    $('permission').textContent = 'granted / permis';
-    setStatus(`GPS activ. Precizie aproximativă: ${Math.round(c.accuracy)} m.`, 'ok');
-  }, err => {
-    const msg = err.code===1 ? 'Permisiunea GPS a fost refuzată. Activează locația pentru Safari/aplicație.' : (err.code===2 ? 'Poziția nu este disponibilă momentan.' : `Timeout GPS: ${err.message}`);
-    setStatus(msg, 'err');
-    $('permission').textContent = err.code===1 ? 'denied / refuzat' : 'eroare';
-  }, {enableHighAccuracy:true, maximumAge:0, timeout:20000});
-}
-function stopGPS(){
-  if(watchId !== null){
-    navigator.geolocation.clearWatch(watchId);
-    watchId = null;
-  }
-  setStatus('GPS oprit.', 'idle');
-}
-function copyCoordinates(){
-  if(!lastCoords){
-    setStatus('Nu există coordonate de copiat. Pornește GPS mai întâi.', 'err');
-    return;
-  }
-  const txt = `${fmt(lastCoords.latitude,7)}, ${fmt(lastCoords.longitude,7)}`;
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(()=>setStatus('Coordonatele au fost copiate.', 'ok')).catch(()=>setStatus(txt, 'ok'));
-  } else {
-    setStatus(txt, 'ok');
-  }
-}
-window.addEventListener('online', updateStaticInfo);
-window.addEventListener('offline', updateStaticInfo);
-updateStaticInfo();
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
-</script>
+  <script>
+    const els = {
+      startBtn: document.getElementById('startBtn'),
+      stopBtn: document.getElementById('stopBtn'),
+      copyBtn: document.getElementById('copyBtn'),
+      mapBtn: document.getElementById('mapBtn'),
+      statusDot: document.getElementById('statusDot'),
+      statusText: document.getElementById('statusText'),
+      lat: document.getElementById('lat'),
+      lon: document.getElementById('lon'),
+      time: document.getElementById('time'),
+      date: document.getElementById('date'),
+      accuracy: document.getElementById('accuracy'),
+      altitude: document.getElementById('altitude'),
+      speed: document.getElementById('speed'),
+      heading: document.getElementById('heading'),
+      updated: document.getElementById('updated'),
+      coordsText: document.getElementById('coordsText'),
+      toast: document.getElementById('toast')
+    };
+
+    let watchId = null;
+    let lastCoords = '';
+
+    function fmtNumber(value, decimals = 6) {
+      return typeof value === 'number' && Number.isFinite(value) ? value.toFixed(decimals) : '—';
+    }
+
+    function fmtMeters(value) {
+      return typeof value === 'number' && Number.isFinite(value) ? `${Math.round(value)} m` : '—';
+    }
+
+    function fmtSpeed(value) {
+      if (typeof value !== 'number' || !Number.isFinite(value)) return '—';
+      const kmh = value * 3.6;
+      return `${kmh.toFixed(1)} km/h`;
+    }
+
+    function fmtHeading(value) {
+      if (typeof value !== 'number' || !Number.isFinite(value)) return '—';
+      const normalized = ((value % 360) + 360) % 360;
+      const names = ['N', 'NE', 'E', 'SE', 'S', 'SV', 'V', 'NV'];
+      const idx = Math.round(normalized / 45) % 8;
+      return `${names[idx]} (${Math.round(normalized)}°)`;
+    }
+
+    function setStatus(text, active = false) {
+      els.statusText.textContent = text;
+      els.statusDot.classList.toggle('on', active);
+    }
+
+    function toast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add('show');
+      setTimeout(() => els.toast.classList.remove('show'), 1700);
+    }
+
+    function updatePosition(position) {
+      const { latitude, longitude, accuracy, altitude, speed, heading } = position.coords;
+      const now = new Date(position.timestamp || Date.now());
+      const lat = fmtNumber(latitude, 6);
+      const lon = fmtNumber(longitude, 6);
+
+      els.lat.textContent = lat;
+      els.lon.textContent = lon;
+      els.time.textContent = now.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      els.date.textContent = now.toLocaleDateString('ro-RO');
+      els.accuracy.textContent = fmtMeters(accuracy);
+      els.altitude.textContent = fmtMeters(altitude);
+      els.speed.textContent = fmtSpeed(speed);
+      els.heading.textContent = fmtHeading(heading);
+      els.updated.textContent = 'acum';
+
+      lastCoords = `${lat}, ${lon}`;
+      els.coordsText.textContent = `Lat: ${lat} | Long: ${lon}`;
+      els.copyBtn.disabled = false;
+      els.mapBtn.classList.remove('disabled');
+      els.mapBtn.href = `https://maps.apple.com/?ll=${latitude},${longitude}&q=Poziția%20mea`;
+      setStatus('GPS activ', true);
+    }
+
+    function handleError(error) {
+      let message = 'Nu s-a putut obține locația.';
+      if (error.code === error.PERMISSION_DENIED) message = 'Permisiunea pentru locație a fost refuzată.';
+      if (error.code === error.POSITION_UNAVAILABLE) message = 'Locația nu este disponibilă momentan.';
+      if (error.code === error.TIMEOUT) message = 'Timpul de așteptare pentru GPS a expirat.';
+      setStatus(message, false);
+      toast(message);
+      stopGps(false);
+    }
+
+    function startGps() {
+      if (!('geolocation' in navigator)) {
+        setStatus('Geolocația nu este suportată.', false);
+        return;
+      }
+      setStatus('Se caută semnal GPS...', false);
+      els.startBtn.disabled = true;
+      els.stopBtn.disabled = false;
+
+      watchId = navigator.geolocation.watchPosition(updatePosition, handleError, {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      });
+    }
+
+    function stopGps(showMessage = true) {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+      els.startBtn.disabled = false;
+      els.stopBtn.disabled = true;
+      if (showMessage) setStatus('GPS oprit', false);
+    }
+
+    async function copyCoords() {
+      if (!lastCoords) return;
+      try {
+        await navigator.clipboard.writeText(lastCoords);
+        toast('Coordonate copiate');
+      } catch (_) {
+        toast('Nu am putut copia automat');
+      }
+    }
+
+    els.startBtn.addEventListener('click', startGps);
+    els.stopBtn.addEventListener('click', () => stopGps(true));
+    els.copyBtn.addEventListener('click', copyCoords);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js?v=5').catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>
