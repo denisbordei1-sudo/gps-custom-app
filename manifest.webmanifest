@@ -1,9 +1,14 @@
 {
-  "name": "GPS Custom App",
-  "short_name": "GPS App",
+  "name": "GPS Lab Navigator",
+  "short_name": "GPS Lab",
+  "description": "Aplicatie PWA pentru afisarea datelor GPS pe iPhone.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#020617",
-  "theme_color": "#0f172a",
-  "icons": []
+  "background_color": "#07110f",
+  "theme_color": "#07110f",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
 }
