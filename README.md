@@ -1,6 +1,6 @@
-# GPS Custom App - PWA v5
+# GPS Custom App - PWA v6
 
-Variantă finală echilibrată: template modern, fără elemente inutile, dar cu viteză și direcție păstrate.
+Variantă echilibrată pentru laborator: template modern, câmpuri GPS principale, viteză și direcție păstrate, hartă integrată direct în aplicație.
 
 ## Afișează
 
@@ -13,15 +13,17 @@ Variantă finală echilibrată: template modern, fără elemente inutile, dar cu
 - Viteză estimată
 - Direcție de deplasare
 - Număr sateliți: N/A iOS
-- Ultima actualizare
+- Moment măsurare
 - Coordonate pentru copiere
-- Deschidere hartă
+- Hartă integrată în aplicație
 
 ## Observații iOS
 
 Pe iPhone, browserul nu oferă prin API public numărul brut de sateliți GPS. Din acest motiv, aplicația afișează `N/A iOS` și folosește acuratețea GPS ca indicator al calității poziției.
 
-Viteza și direcția sunt valori estimate de telefon/browser. Ele pot lipsi sau pot fluctua, mai ales când utilizatorul stă pe loc, este în interior sau semnalul GPS este slab.
+Viteza și direcția sunt valori estimate de telefon/browser. Ele pot lipsi sau pot fluctua, mai ales când utilizatorul stă pe loc, este în interior sau semnalul GPS este slab. Direcția reprezintă direcția deplasării.
+
+Altitudinea este afișată când dispozitivul returnează această informație. Dacă nu este disponibilă, aplicația afișează `Nedisponibilă`.
 
 ## Update pe GitHub Pages
 
@@ -34,4 +36,4 @@ Viteza și direcția sunt valori estimate de telefon/browser. Ele pot lipsi sau 
 - icon-192.png
 - icon-512.png
 
-După commit, deschide linkul cu `?v=5` la final pentru a evita cache-ul.
+După commit, deschide linkul cu `?v=6` la final pentru a evita cache-ul.

@@ -1,10 +1,10 @@
-const CACHE_NAME = 'gps-custom-app-v5';
+const CACHE_NAME = 'gps-custom-app-v6';
 const ASSETS = [
-  './?v=5',
-  './index.html?v=5',
-  './manifest.webmanifest?v=5',
-  './icon-192.png?v=5',
-  './icon-512.png?v=5'
+  './?v=6',
+  './index.html?v=6',
+  './manifest.webmanifest?v=6',
+  './icon-192.png?v=6',
+  './icon-512.png?v=6'
 ];
 
 self.addEventListener('install', event => {
@@ -27,10 +27,10 @@ self.addEventListener('fetch', event => {
       fetch(event.request)
         .then(response => {
           const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put('./?v=5', copy));
+          caches.open(CACHE_NAME).then(cache => cache.put('./?v=6', copy));
           return response;
         })
-        .catch(() => caches.match('./?v=5').then(cached => cached || caches.match('./index.html?v=5')))
+        .catch(() => caches.match('./?v=6').then(cached => cached || caches.match('./index.html?v=6')))
     );
     return;
   }

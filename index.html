@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="GPS Custom" />
   <title>GPS Custom App</title>
-  <link rel="manifest" href="manifest.webmanifest?v=5" />
-  <link rel="apple-touch-icon" href="icon-192.png?v=5" />
+  <link rel="manifest" href="manifest.webmanifest?v=6" />
+  <link rel="apple-touch-icon" href="icon-192.png?v=6" />
   <style>
     :root {
       --bg: #06130f;
@@ -142,7 +142,7 @@
       margin: 18px 0;
     }
 
-    button, a.button {
+    button {
       width: 100%;
       border: 0;
       border-radius: 18px;
@@ -161,14 +161,14 @@
       min-height: 50px;
     }
 
-    button.secondary, a.secondary {
+    button.secondary {
       color: var(--text);
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid var(--border);
       box-shadow: none;
     }
 
-    button:disabled, a.disabled {
+    button:disabled {
       opacity: 0.45;
       cursor: not-allowed;
       pointer-events: none;
@@ -223,18 +223,66 @@
 
     .footer-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 12px;
       margin-top: 12px;
     }
 
-    .note {
-      margin-top: 14px;
+    .map-card {
+      padding: 0;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .map-header {
+      padding: 16px 16px 10px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .map-subtitle {
       color: var(--muted);
       font-size: 12px;
-      line-height: 1.45;
-      text-align: center;
+      line-height: 1.35;
+      margin-top: 4px;
     }
+
+    .map-shell {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      background:
+        linear-gradient(135deg, rgba(76, 255, 176, 0.08), rgba(88, 215, 255, 0.08)),
+        #071510;
+      border-top: 1px solid var(--border);
+    }
+
+    .map-shell iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      filter: saturate(0.95) contrast(1.04);
+    }
+
+    .map-placeholder {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+      background:
+        radial-gradient(circle at center, rgba(76, 255, 176, 0.12), transparent 35%),
+        linear-gradient(145deg, rgba(10, 25, 20, 0.82), rgba(4, 12, 9, 0.86));
+    }
+
+    .map-placeholder.hidden { display: none; }
 
     .toast {
       position: fixed;
@@ -261,8 +309,9 @@
       h1 { font-size: 26px; }
       .gps-icon { width: 58px; height: 58px; border-radius: 19px; }
       .grid { grid-template-columns: 1fr; }
-      .controls, .footer-actions { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: 1fr; }
       .value { font-size: 22px; }
+      .map-shell { height: 280px; }
     }
   </style>
 </head>
@@ -315,17 +364,17 @@
       <div class="card">
         <div class="label">Altitudine</div>
         <div id="altitude" class="value">—</div>
-        <div class="hint">Poate lipsi dacă telefonul nu primește această informație.</div>
+        <div class="hint">Afișată când această informație este disponibilă de la GPS.</div>
       </div>
       <div class="card">
         <div class="label">Viteză</div>
         <div id="speed" class="value">—</div>
-        <div class="hint">Valoare estimată de telefon; e mai utilă când te deplasezi.</div>
+        <div class="hint">Valoare estimată; necesită deplasare.</div>
       </div>
       <div class="card">
         <div class="label">Direcție</div>
         <div id="heading" class="value">—</div>
-        <div class="hint">Direcția deplasării, nu neapărat orientarea telefonului.</div>
+        <div class="hint">Direcția deplasării.</div>
       </div>
       <div class="card">
         <div class="label">Nr. sateliți</div>
@@ -333,7 +382,7 @@
         <div class="hint">iOS nu expune direct numărul brut de sateliți prin browser.</div>
       </div>
       <div class="card">
-        <div class="label">Ultima actualizare</div>
+        <div class="label">Moment măsurare</div>
         <div id="updated" class="value">—</div>
       </div>
       <div class="card wide">
@@ -341,12 +390,21 @@
         <div id="coordsText" class="small-value">Pornește GPS-ul pentru afișarea coordonatelor.</div>
         <div class="footer-actions">
           <button id="copyBtn" class="secondary" disabled>Copiază coordonate</button>
-          <a id="mapBtn" class="button secondary disabled" href="#" target="_blank" rel="noopener">Deschide harta</a>
+        </div>
+      </div>
+      <div class="card wide map-card">
+        <div class="map-header">
+          <div>
+            <div class="label">Hartă integrată</div>
+            <div id="mapInfo" class="map-subtitle">Poziția va fi afișată aici după pornirea GPS-ului.</div>
+          </div>
+        </div>
+        <div class="map-shell">
+          <iframe id="mapFrame" title="Hartă poziție GPS" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <div id="mapPlaceholder" class="map-placeholder">Pornește GPS-ul pentru a afișa poziția pe hartă în aplicație.</div>
         </div>
       </div>
     </section>
-
-    <p class="note">Pentru rezultate mai bune, testează aplicația afară sau lângă geam și permite accesul la locație.</p>
   </main>
 
   <div id="toast" class="toast" role="status" aria-live="polite">Coordonate copiate</div>
@@ -356,7 +414,6 @@
       startBtn: document.getElementById('startBtn'),
       stopBtn: document.getElementById('stopBtn'),
       copyBtn: document.getElementById('copyBtn'),
-      mapBtn: document.getElementById('mapBtn'),
       statusDot: document.getElementById('statusDot'),
       statusText: document.getElementById('statusText'),
       lat: document.getElementById('lat'),
@@ -369,11 +426,15 @@
       heading: document.getElementById('heading'),
       updated: document.getElementById('updated'),
       coordsText: document.getElementById('coordsText'),
+      mapFrame: document.getElementById('mapFrame'),
+      mapInfo: document.getElementById('mapInfo'),
+      mapPlaceholder: document.getElementById('mapPlaceholder'),
       toast: document.getElementById('toast')
     };
 
     let watchId = null;
     let lastCoords = '';
+    let lastMapRefresh = 0;
 
     function fmtNumber(value, decimals = 6) {
       return typeof value === 'number' && Number.isFinite(value) ? value.toFixed(decimals) : '—';
@@ -383,14 +444,18 @@
       return typeof value === 'number' && Number.isFinite(value) ? `${Math.round(value)} m` : '—';
     }
 
+    function fmtAltitude(value) {
+      return typeof value === 'number' && Number.isFinite(value) ? `${Math.round(value)} m` : 'Nedisponibilă';
+    }
+
     function fmtSpeed(value) {
-      if (typeof value !== 'number' || !Number.isFinite(value)) return '—';
+      if (typeof value !== 'number' || !Number.isFinite(value)) return 'Nedisponibilă';
       const kmh = value * 3.6;
       return `${kmh.toFixed(1)} km/h`;
     }
 
     function fmtHeading(value) {
-      if (typeof value !== 'number' || !Number.isFinite(value)) return '—';
+      if (typeof value !== 'number' || !Number.isFinite(value)) return 'Nedisponibilă';
       const normalized = ((value % 360) + 360) % 360;
       const names = ['N', 'NE', 'E', 'SE', 'S', 'SV', 'V', 'NV'];
       const idx = Math.round(normalized / 45) % 8;
@@ -408,27 +473,46 @@
       setTimeout(() => els.toast.classList.remove('show'), 1700);
     }
 
+    function mapUrl(latitude, longitude) {
+      const deltaLat = 0.004;
+      const deltaLon = 0.006;
+      const minLon = longitude - deltaLon;
+      const minLat = latitude - deltaLat;
+      const maxLon = longitude + deltaLon;
+      const maxLat = latitude + deltaLat;
+      return `https://www.openstreetmap.org/export/embed.html?bbox=${minLon}%2C${minLat}%2C${maxLon}%2C${maxLat}&layer=mapnik&marker=${latitude}%2C${longitude}`;
+    }
+
+    function updateMap(latitude, longitude, force = false) {
+      const now = Date.now();
+      if (!force && now - lastMapRefresh < 7000) return;
+      lastMapRefresh = now;
+      els.mapFrame.src = mapUrl(latitude, longitude);
+      els.mapPlaceholder.classList.add('hidden');
+      els.mapInfo.textContent = 'Poziția curentă este marcată pe hartă.';
+    }
+
     function updatePosition(position) {
       const { latitude, longitude, accuracy, altitude, speed, heading } = position.coords;
       const now = new Date(position.timestamp || Date.now());
       const lat = fmtNumber(latitude, 6);
       const lon = fmtNumber(longitude, 6);
+      const time = now.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
       els.lat.textContent = lat;
       els.lon.textContent = lon;
-      els.time.textContent = now.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      els.time.textContent = time;
       els.date.textContent = now.toLocaleDateString('ro-RO');
       els.accuracy.textContent = fmtMeters(accuracy);
-      els.altitude.textContent = fmtMeters(altitude);
+      els.altitude.textContent = fmtAltitude(altitude);
       els.speed.textContent = fmtSpeed(speed);
       els.heading.textContent = fmtHeading(heading);
-      els.updated.textContent = 'acum';
+      els.updated.textContent = time;
 
       lastCoords = `${lat}, ${lon}`;
       els.coordsText.textContent = `Lat: ${lat} | Long: ${lon}`;
       els.copyBtn.disabled = false;
-      els.mapBtn.classList.remove('disabled');
-      els.mapBtn.href = `https://maps.apple.com/?ll=${latitude},${longitude}&q=Poziția%20mea`;
+      updateMap(latitude, longitude);
       setStatus('GPS activ', true);
     }
 
@@ -484,7 +568,7 @@
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=5').catch(() => {});
+        navigator.serviceWorker.register('./sw.js?v=6').catch(() => {});
       });
     }
   </script>
