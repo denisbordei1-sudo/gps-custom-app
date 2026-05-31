@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <title>GPS Custom App</title>
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { margin: 0; background: radial-gradient(circle at top, #1e3a8a 0, #020617 45%, #000 100%); color: #e5e7eb; min-height: 100vh; }
+    .wrap { max-width: 520px; margin: 0 auto; padding: 28px 18px 40px; }
+    .hero { background: rgba(15,23,42,.72); border: 1px solid rgba(148,163,184,.28); border-radius: 28px; padding: 22px; box-shadow: 0 24px 80px rgba(0,0,0,.45); backdrop-filter: blur(16px); }
+    h1 { margin: 0; font-size: 30px; letter-spacing: -.04em; }
+    .subtitle { margin: 8px 0 18px; color: #bfdbfe; line-height: 1.45; }
+    .status { display:flex; align-items:center; gap:10px; padding: 11px 12px; border-radius: 18px; background: rgba(30,64,175,.35); color:#dbeafe; font-size:14px; }
+    .dot { width:10px; height:10px; border-radius:50%; background:#f59e0b; box-shadow:0 0 18px #f59e0b; }
+    .dot.ok { background:#22c55e; box-shadow:0 0 18px #22c55e; }
+    .grid { display:grid; gap:12px; margin-top: 16px; }
+    .card { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.10); border-radius:22px; padding:16px; }
+    .label { color:#93c5fd; font-size:13px; margin-bottom:8px; }
+    .value { font-size:22px; font-weight:700; word-break:break-word; }
+    .small { font-size:16px; font-weight:600; color:#e0f2fe; }
+    .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    button { width:100%; border:0; border-radius:20px; padding:15px 16px; margin-top:16px; font-size:17px; font-weight:800; background:linear-gradient(135deg,#38bdf8,#2563eb); color:white; box-shadow:0 12px 36px rgba(37,99,235,.45); }
+    button.secondary { background:rgba(255,255,255,.10); box-shadow:none; color:#e5e7eb; border:1px solid rgba(255,255,255,.12); }
+    .note { color:#cbd5e1; font-size:13px; line-height:1.45; margin-top:16px; }
+    iframe { width:100%; height:260px; border:0; border-radius:24px; margin-top:16px; background:#111827; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>GPS Custom App</h1>
+      <p class="subtitle">Aplicație mobilă pentru achiziția, prelucrarea locală și afișarea datelor GPS pe iPhone.</p>
+      <div class="status"><span id="dot" class="dot"></span><span id="status">GPS oprit. Apasă „Pornește GPS”.</span></div>
+      <button onclick="startGPS()">Pornește GPS</button>
+      <button class="secondary" onclick="stopGPS()">Oprește GPS</button>
+      <div class="grid">
+        <div class="row">
+          <div class="card"><div class="label">Latitudine</div><div id="lat" class="value">—</div></div>
+          <div class="card"><div class="label">Longitudine</div><div id="lon" class="value">—</div></div>
+        </div>
+        <div class="row">
+          <div class="card"><div class="label">Ora</div><div id="time" class="value">—</div></div>
+          <div class="card"><div class="label">Data</div><div id="date" class="value">—</div></div>
+        </div>
+        <div class="row">
+          <div class="card"><div class="label">Acuratețe</div><div id="acc" class="value small">—</div></div>
+          <div class="card"><div class="label">Altitudine</div><div id="alt" class="value small">—</div></div>
+        </div>
+        <div class="row">
+          <div class="card"><div class="label">Viteză</div><div id="speed" class="value small">—</div></div>
+          <div class="card"><div class="label">Nr. sateliți</div><div class="value small">N/A iOS</div></div>
+        </div>
+      </div>
+      <iframe id="map" title="Hartă GPS"></iframe>
+      <p class="note">Notă: iOS nu oferă prin API web/standard numărul brut de sateliți GPS. De aceea aplicația afișează N/A iOS și completează cu acuratețe, altitudine, viteză și hartă.</p>
+    </section>
+  </main>
+<script>
+let watchId = null;
+const fmt = (n, digits=6) => typeof n === 'number' ? n.toFixed(digits) : '—';
+function setStatus(text, ok=false){ document.getElementById('status').textContent = text; document.getElementById('dot').classList.toggle('ok', ok); }
+function startGPS(){
+  if(!('geolocation' in navigator)){ setStatus('Geolocation API nu este disponibil pe acest browser.'); return; }
+  setStatus('Se cere permisiunea GPS...', false);
+  watchId = navigator.geolocation.watchPosition(pos => {
+    const c = pos.coords;
+    const d = new Date(pos.timestamp);
+    document.getElementById('lat').textContent = fmt(c.latitude);
+    document.getElementById('lon').textContent = fmt(c.longitude);
+    document.getElementById('time').textContent = d.toLocaleTimeString('ro-RO');
+    document.getElementById('date').textContent = d.toLocaleDateString('ro-RO');
+    document.getElementById('acc').textContent = c.accuracy ? `${Math.round(c.accuracy)} m` : '—';
+    document.getElementById('alt').textContent = c.altitude !== null ? `${Math.round(c.altitude)} m` : '—';
+    document.getElementById('speed').textContent = c.speed !== null ? `${(c.speed*3.6).toFixed(1)} km/h` : '—';
+    document.getElementById('map').src = `https://www.openstreetmap.org/export/embed.html?bbox=${c.longitude-0.006},${c.latitude-0.006},${c.longitude+0.006},${c.latitude+0.006}&layer=mapnik&marker=${c.latitude},${c.longitude}`;
+    setStatus('GPS activ. Datele sunt actualizate în timp real.', true);
+  }, err => {
+    const msg = err.code === 1 ? 'Permisiunea GPS a fost refuzată.' : err.message;
+    setStatus(msg, false);
+  }, { enableHighAccuracy:true, maximumAge:0, timeout:15000 });
+}
+function stopGPS(){ if(watchId !== null){ navigator.geolocation.clearWatch(watchId); watchId = null; } setStatus('GPS oprit.', false); }
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
+</script>
+</body>
+</html>
